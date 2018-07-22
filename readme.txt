@@ -105,7 +105,7 @@ options for variants of Cortex-A/R and Cortex-M architectures.
 |------------|--------------------------------------------|--------------|
 | Cortex-M7  | -mthumb -mcpu=cortex-m7 -mfloat-abi=softfp | thumb        |
 | (Soft FP)  | -mfpu=fpv5-sp-d16                          | /v7e-m       |
-|            |--------------------------------------------| /fpv5-sp     |
+|            |--------------------------------------------| /fpv4-sp     |
 |            | -mthumb -march=armv7e-m -mfloat-abi=softfp | /softfp      |
 |            | -mfpu=fpv5-sp-d16                          |              |
 |            |--------------------------------------------|--------------|
@@ -117,7 +117,7 @@ options for variants of Cortex-A/R and Cortex-M architectures.
 |------------|--------------------------------------------|--------------|
 | Cortex-M7  | -mthumb -mcpu=cortex-m7 -mfloat-abi=hard   | thumb        |
 | (Hard FP)  | -mfpu=fpv5-sp-d16                          | /v7e-m       |
-|            |--------------------------------------------| /fpv5-sp     |
+|            |--------------------------------------------| /fpv4-sp     |
 |            | -mthumb -march=armv7e-m -mfloat-abi=hard   | /hard        |
 |            | -mfpu=fpv5-sp-d16                          |              |
 |            |--------------------------------------------|--------------|
@@ -141,38 +141,55 @@ options for variants of Cortex-A/R and Cortex-M architectures.
 |            | -mthumb -march=armv8-m.main                | /softfp      |
 |            | -mfloat-abi=softfp -mfpu=fpv5-sp-d16       |              |
 |            |--------------------------------------------|--------------|
-|            | -mthumb -mcpu-cortex-m33                   | thumb        |
+|            | -mthumb -march=armv8-m.main                | thumb        |
 |            | -mfloat-abi=softfp -mfpu=fpv5-d16          | /v8-m.main   |
-|            |--------------------------------------------| /fpv5        |
-|            | -mthumb -march=armv8-m.main                | /softfp      |
-|            | -mfloat-abi=softfp -mfpu=fpv5-d16          |              |
+|            |                                            | /fpv5        |
+|            |                                            | /softfp      |
 |------------|--------------------------------------------|--------------|
 | Cortex-M33 | -mthumb -mcpu=cortex-m33                   | thumb        |
 | (Hard FP)  | -mfloat-abi=hard -mfpu=fpv5-sp-d16         | /v8-m.main   |
 |            |--------------------------------------------| /fpv5-sp     |
 |            | -mthumb -march=armv8-m.main                | /hard        |
-|            | -mfloat-abi=softfp -mfpu=fpv5-d16          |              |
+|            | -mfloat-abi=hard -mfpu=fpv5-sp-d16         |              |
+|            |--------------------------------------------|--------------|
+|            | -mthumb -march=armv8-m.main                | thumb        |
+|            | -mfloat-abi=hard -mfpu=fpv5-d16            | /v8-m.main   |
+|            |                                            | /fpv5        |
+|            |                                            | /hard        |
 |------------|--------------------------------------------|--------------|
 | Cortex-R4  | [-mthumb] -march=armv7-r                   | thumb        |
 | Cortex-R5  |                                            | /v7-ar       |
 | Cortex-R7  |                                            |              |
 | Cortex-R8  |                                            |              |
-| Cortex-R52 |                                            |              |
 | (No FP)    |                                            |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-R4  | [-mthumb] -march=armv7-r -mfloat-abi=softfp| thumb        |
 | Cortex-R5  | -mfpu=vfpv3-d16                            | /v7-ar       |
 | Cortex-R7  |                                            | /fpv3        |
 | Cortex-R8  |                                            | /softfp      |
-| Cortex-R52 |                                            |              |
 | (Soft FP)  |                                            |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-R4  | [-mthumb] -march=armv7-r -mfloat-abi=hard  | thumb        |
 | Cortex-R5  | -mfpu=vfpv3-d16                            | /v7-ar       |
 | Cortex-R7  |                                            | /fpv3        |
 | Cortex-R8  |                                            | /hard        |
-| Cortex-R52 |                                            |              |
 | (Hard FP)  |                                            |              |
+|------------|--------------------------------------------|--------------|
+| Cortex-R52 | [-mthumb] -mcpu=cortex-r52                 | thumb        |
+| (No FP)    |--------------------------------------------| /v7-ar       |
+|            | [-mthumb] -march=armv8-r+crc               |              |
+|------------|--------------------------------------------|--------------|
+| Cortex-R52 | [-mthumb] -mcpu=cortex-r52                 | thumb        |
+| (Soft FP)  | -mfloat-abi=softfp -mfpu=neon-fp-armv8     | /v7-ar       |
+|            |--------------------------------------------| /fpv3        |
+|            | [-mthumb] -march=armv8-r+crc               | /softfp      |
+|            | -mfloat-abi=hard -mfpu=neon-fp-armv8       |              |
+|------------|--------------------------------------------|--------------|
+| Cortex-R52 | [-mthumb] -mcpu=cortex-r52                 | thumb        |
+| (Hard FP)  | -mfloat-abi=hard -mfpu=neon-fp-armv8       | /v7-ar       |
+|            |--------------------------------------------| /fpv3        |
+|            | [-mthumb] -march=armv8-r+crc               | /hard        |
+|            | -mfloat-abi=hard -mfpu=neon-fp-armv8       |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-A*  | [-mthumb] -march=armv7-a                   | thumb        |
 | (No FP)    |                                            | /v7-ar       |

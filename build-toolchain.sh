@@ -302,6 +302,7 @@ $SRCDIR/$NEWLIB/configure  \
     --htmldir=$INSTALLDIR_NATIVE_DOC/html \
     --pdfdir=$INSTALLDIR_NATIVE_DOC/pdf \
     --enable-newlib-io-long-long \
+    --enable-newlib-io-c99-formats \
     --enable-newlib-register-fini \
     --enable-newlib-retargetable-locking \
     --disable-newlib-supplied-syscalls \
