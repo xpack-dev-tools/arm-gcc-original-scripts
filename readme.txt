@@ -1,5 +1,5 @@
-GNU Tools for ARM Embedded Processors
-Version: 6
+GNU Tools for Arm Embedded Processors
+Version: 7
 
 Table of Contents
 * Installing executables on Linux
@@ -71,8 +71,7 @@ the following table shows how to invoke GCC/G++ with correct command line
 options for variants of Cortex-A/R and Cortex-M architectures.
 
 --------------------------------------------------------------------------
-|   ARM core | Command Line Options                       | multilib     |
-| / ARM arch |                                            |              |
+| Arm core   | Command Line Options                       | multilib     |
 |------------|--------------------------------------------|--------------|
 | Cortex-M0+ | -mthumb -mcpu=cortex-m0plus                | thumb        |
 | Cortex-M0  | -mthumb -mcpu=cortex-m0                    | /v6-m        |
@@ -153,29 +152,26 @@ options for variants of Cortex-A/R and Cortex-M architectures.
 |            |--------------------------------------------| /fpv5-sp     |
 |            | -mthumb -march=armv8-m.main                | /hard        |
 |            | -mfloat-abi=softfp -mfpu=fpv5-d16          |              |
-|            |--------------------------------------------|--------------|
-|            | -mthumb -mcpu=cortex-m33                   | thumb        |
-|            | -mfloat-abi=hard -mfpu=fpv5-d16            | /v8-m.main   |
-|            |--------------------------------------------| /fpv5        |
-|            | -mthumb -march=armv8-m.main                | /hard        |
-|            | -mfloat-abi=hard -mfpu=fpv5-d16            |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-R4  | [-mthumb] -march=armv7-r                   | thumb        |
 | Cortex-R5  |                                            | /v7-ar       |
 | Cortex-R7  |                                            |              |
 | Cortex-R8  |                                            |              |
+| Cortex-R52 |                                            |              |
 | (No FP)    |                                            |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-R4  | [-mthumb] -march=armv7-r -mfloat-abi=softfp| thumb        |
 | Cortex-R5  | -mfpu=vfpv3-d16                            | /v7-ar       |
 | Cortex-R7  |                                            | /fpv3        |
 | Cortex-R8  |                                            | /softfp      |
+| Cortex-R52 |                                            |              |
 | (Soft FP)  |                                            |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-R4  | [-mthumb] -march=armv7-r -mfloat-abi=hard  | thumb        |
 | Cortex-R5  | -mfpu=vfpv3-d16                            | /v7-ar       |
 | Cortex-R7  |                                            | /fpv3        |
 | Cortex-R8  |                                            | /hard        |
+| Cortex-R52 |                                            |              |
 | (Hard FP)  |                                            |              |
 |------------|--------------------------------------------|--------------|
 | Cortex-A*  | [-mthumb] -march=armv7-a                   | thumb        |
@@ -248,8 +244,8 @@ $ arm-none-eabi-gcc --specs=nosys.specs $(OTHER_LINK_OPTIONS)
 
 * Linker scripts & startup code *
 
-Latest update of linker scripts template and startup code is available on 
-http://www.arm.com/cmsis
+Latest update of linker scripts template and startup code is available on
+https://developer.arm.com/embedded/cmsis
 
 * Samples *
 Examples of all above usages are available at:

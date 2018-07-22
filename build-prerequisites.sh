@@ -10,7 +10,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of ARM nor the names of its contributors may be used
+#     * Neither the name of Arm nor the names of its contributors may be used
 #       to endorse or promote products derived from this software without
 #       specific prior written permission.
 # 
@@ -39,13 +39,13 @@ script_path=`cd $(dirname $0) && pwd -P`
 . $script_path/build-common.sh
 
 # This file contains the sequence of commands used to build the prerequisites
-# for ARM EABI toolchain.
+# for GNU Tools Arm Embedded toolchain.
 usage ()
 {
 cat<<EOF
 Usage: $0 [--skip_steps=...]
 
-This script will build dependent libraries for gcc arm embedded toolchain.
+This script will build dependent libraries for GNU Tools Arm Embedded toolchain.
 
 OPTIONS:
   --skip_steps=STEPS    specify which build steps you want to skip.  Concatenate

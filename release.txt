@@ -1,7 +1,7 @@
 Release notes for
 *************************************************
-GNU Tools for ARM Embedded Processors 6
-                               - Q2 2017
+GNU Tools for Arm Embedded Processors 7
+                               - Q4 2017
 *************************************************
 
 This release includes the following items:
@@ -11,17 +11,17 @@ This release includes the following items:
 * Source code package (together with build scripts and instructions to setup
   build environment), composed of:
 
-  * gcc : ARM/embedded-6-branch revision 249437
-    svn://gcc.gnu.org/svn/gcc/branches/ARM/embedded-6-branch/
+  * gcc : ARM/embedded-7-branch revision 255204
+    svn://gcc.gnu.org/svn/gcc/branches/ARM/embedded-7-branch/
 
-  * binutils : 2.28
-    git://sourceware.org/git/binutils-gdb.git commit c0a558756bcf42dc2554aa778b84bf6e13232819
+  * binutils : 2.29 mainline
+    git://sourceware.org/git/binutils-gdb.git commit b23dc97fe237a1d9e850d7cbeee066183a00630b
 
   * newlib and newlib-nano :
-    git://sourceware.org/git/newlib-cygwin.git commit 0d79b021a4ec4e6b9aa1a9f6db0e29a137005ce7
+    git://sourceware.org/git/newlib-cygwin.git commit 76bd5cab331a873ac422fdcb7ba5fe79abea94f0
 
-  * gdb : 7.12 without target sim support
-    git://sourceware.org/git/binutils-gdb.git commit 17265fcd6b8b6406821d8e6bdcfbb4760bdf28aa
+  * gdb : 8.0 mainline
+    git://sourceware.org/git/binutils-gdb.git commit b23dc97fe237a1d9e850d7cbeee066183a00630b
 
 Note that some or all of the following prerequisites are downloaded when
 building from source:
@@ -50,76 +50,44 @@ building from source:
   * zlib 1.2.8
     http://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz/download
 
-Supported hosts:
-* Windows 7 32/64 bits (with installer and alternative zip package)
-* Linux 64 bits
-  - Ubuntu 14.04 or later (tarball)
-  - Ubuntu 14.04/16.04/16.10 (tarball and PPA)
-  - RHEL 7 (tarball)
+Minimum host requirements:
+* Windows 7 32/64 bits or later (with installer and alternative zip package)
+* Linux
+  - Ubuntu 14.04 64 bits or later (tarball)
+  - Ubuntu supported releases 32 bits and 64 bits (PPA)
+    https://www.ubuntu.com/info/release-end-of-life
+  - RHEL 7 64 bits (tarball)
 * Mac OS X 10.7.3 and newer 64 bits (tarball)
 
 Supported target OS:
 * Bare metal EABI only
 
 Features:
-* All GCC 6 features, plus latest mainline features:
-  + Full ARMv8-M support including atomics and Security Extensions
-  + ARM PURECODE support for ARMv7-M and ARMv8-M Baseline and Mainline
-  + Co-processor intrinsics support
-  + Cortex-M23 and Cortex-M33 support
-  + -mthumb optional for Cortex-M devices
-* Support for OS-retargeting of locking routines in newlib
-* Advanced SIMD-optimized memchr implementation in newlib
-* Enable setting options for Windows installer on command line
+* All GCC 7 features, plus latest mainline features:
+  + Armv8-R and Arm Cortex-R52 support
 
 Tests:
-* Tested on a variety of Cortex-M0/M0+/M3/M4/M7/A9 boards
-* Tested on Qemu
-* Tested on ARM Fast Models
+* Targets
+  + variety of Cortex-M0/M0+/M3/M4/M7/A9 boards
+  + Qemu
+  + Arm Fast Models
+* Hosts
+  + Windows 7 32/64 bits (with installer and alternative zip package)
+  + Linux 64 bits
+    - Ubuntu 14.04 and 16.04 (tarball and PPA)
+    - RHEL 7 (tarball)
+  + Mac OS X 10.7.3 (tarball)
 
-Important bugs fixed in 6 release:
-
-* Fix redundant load in loop
-  https://answers.launchpad.net/gcc-arm-embedded/+question/259553
-* Fixed stack corruption when using high registers and LR register
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=77933
-* Fixed internal compiler error when compiling empty FIQ interrupt handler
-  https://bugs.launchpad.net/gcc-arm-embedded/+bug/1454506
-* Fix internal compiler error with LTO when building g++.dg/lto/20081219 testcase
-* Fixed callee-saved register trashing when clobbering SP register
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=77904
-* Fixed internal compiler error when using -mslow-flash-data and floating-point
-  operations
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71607
-* Fixed wrong code generation with indirect sibbling calls
-  https://bugs.launchpad.net/gcc-arm-embedded/+bug/1616992
-* Fixed spurious code removal
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=78617
-
-Important bugs fixed in 6 update 1 release:
-
-* Fix Mac GDB crash with invalid commands
-  https://bugs.launchpad.net/gcc-arm-embedded/+bug/1655778
-* Fix Windows wildcard support
-* Fix selection of newlib.h variant with nano.specs and g++
-  https://bugs.launchpad.net/gcc-arm-embedded/+bug/1661882
-* Allow VCMP immediate without prefix in unified syntax
-  https://bugs.launchpad.net/gcc-arm-embedded/+bug/1641333
-
-Important changes in 6 update 2 release:
-
-* GCC incorrectly assumes Cortex-r[578] have 64-bit single-copy atomic LDRD
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80082
-* LDR pseudo-op generates MOVS
-  https://bugs.launchpad.net/gcc-arm-embedded/+bug/1682620
-* Fixed FPSCR getter and setter builtins
-* SG import libraries that were created as executable now fixed to relocatable
-* Enable setting options for Windows installer on command line
-* PURECODE support enabled for ARMv8-M.Baseline
-* Advanced SIMD-optimized memchr implementation in newlib
+Important changes in 7 release:
+* Armv8-R and Arm Cortex-R52 support
+* Fix for https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69866
+* GDB built with C++ enabled for Mac OS X
 
 Known Changes and Issues:
 * Thumb1 code size regression due to new register allocation:
   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59535
 * Multilib is now enabled with --with-multilib-list=rmprofile when building the
   toolchain from source
+* Windows installer now accepts the following options when running in silent mode:
+  - /P Adds the installation bin directory to the system PATH
+  - /R Adds an InstallFolder registry entry for the install.

@@ -9,7 +9,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of ARM nor the names of its contributors may be used
+#     * Neither the name of Arm nor the names of its contributors may be used
 #       to endorse or promote products derived from this software without
 #       specific prior written permission.
 # 
@@ -295,7 +295,8 @@ ENV_VAR_UPDATE_PACK=$ENV_VAR_UPDATE.7z
 PYTHON_WIN_PACK=$PYTHON_WIN.msi
 
 GMP_URL=https://gmplib.org/download/gmp/$GMP_PACK
-MPFR_URL=http://www.mpfr.org/$MPFR/$MPFR_PACK
+#MPFR_URL=http://www.mpfr.org/$MPFR/$MPFR_PACK
+MPFR_URL=https://ftp.gnu.org/gnu/mpfr/$MPFR_PACK
 MPC_URL=ftp://ftp.gnu.org/gnu/mpc/$MPC_PACK
 ISL_URL=http://isl.gforge.inria.fr/$ISL_PACK
 EXPAT_URL=https://downloads.sourceforge.net/project/expat/expat/$EXPAT_VER/$EXPAT_PACK
@@ -323,8 +324,8 @@ elif [ "x$uname_string" == "xdarwin" ] ; then
     HOST_NATIVE=x86_64-apple-darwin10
     READLINK=greadlink
     # Disable parallel build for mac as we will randomly run into "Permission denied" issue.
-    #JOBS=`sysctl -n hw.ncpu`
-    JOBS=1
+    JOBS=`sysctl -n hw.ncpu`
+    #JOBS=1
     GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-lstdc++ -lm"
     TAR=gnutar
     MD5="md5 -r"
@@ -391,7 +392,7 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     NEWLIB_CONFIG_OPTS=
 
 
-    PKGROOTNAME="GNU Tools for ARM Embedded Processors"
+    PKGROOTNAME="GNU Tools for Arm Embedded Processors"
     PKGVERSION="$PKGROOTNAME $GCC_VER_NAME-$RELEASEVER"
     BUGURL="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm"
 
@@ -401,7 +402,7 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     PACKAGE_NAME_NATIVE=$PACKAGE_NAME-$PACKAGE_NAME_SUFFIX
     PACKAGE_NAME_MINGW=$PACKAGE_NAME-win32
     INSTALL_PACKAGE_NAME=gcc-$TARGET-$GCC_VER_NAME-$RELEASEVER
-    INSTALLBASE="GNU Tools ARM Embedded"
+    INSTALLBASE="GNU Tools Arm Embedded"
     APPNAME="$PKGVERSION $GCC_VER_SHORT $release_year"
 
 fi # not a build script
