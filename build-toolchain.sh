@@ -1,10 +1,10 @@
 #! /usr/bin/env bash
 # Copyright (c) 2011-2015, ARM Limited
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright notice,
 #       this list of conditions and the following disclaimer.
 #     * Redistributions in binary form must reproduce the above copyright
@@ -13,7 +13,7 @@
 #     * Neither the name of Arm nor the names of its contributors may be used
 #       to endorse or promote products derived from this software without
 #       specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -149,9 +149,11 @@ if [ "x$skip_steps" != "x" ]; then
 	done
 fi
 
+CXXFLAGS=
 if [ "x$BUILD" == "xx86_64-apple-darwin10" ] || [ "x$is_ppa_release" == "xyes" ]; then
     skip_mingw32=yes
     skip_mingw32_gdb_with_python=yes
+    CXXFLAGS="-fbracket-depth=512"
 fi
 
 #Building mingw gdb with python support requires python windows package and
@@ -274,7 +276,7 @@ $SRCDIR/$GCC/configure --target=$TARGET \
     "--with-pkgversion=$PKGVERSION" \
     ${MULTILIB_LIST}
 
-make -j$JOBS all-gcc
+make -j$JOBS CXXFLAGS="${CXXFLAGS:-}" all-gcc
 
 make install-gcc
 
@@ -340,6 +342,7 @@ $SRCDIR/$NEWLIB_NANO/configure  \
     --prefix=$BUILDDIR_NATIVE/target-libs \
     --disable-newlib-supplied-syscalls    \
     --enable-newlib-reent-small           \
+    --enable-newlib-retargetable-locking  \
     --disable-newlib-fvwrite-in-streamio  \
     --disable-newlib-fseek-optimization   \
     --disable-newlib-wide-orient          \
@@ -399,10 +402,10 @@ $SRCDIR/$GCC/configure --target=$TARGET \
 # This is a workaround. Better approach is have a t-* to set this flag via
 # CRTSTUFF_T_CFLAGS
 if [ "x$DEBUG_BUILD_OPTIONS" != "x" ]; then
-  make -j$JOBS CXXFLAGS="$DEBUG_BUILD_OPTIONS" \
+  make -j$JOBS CXXFLAGS="${CXXFLAGS:-} $DEBUG_BUILD_OPTIONS" \
 	       INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
 else
-  make -j$JOBS INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
+  make -j$JOBS CXXFLAGS="${CXXFLAGS:-}" INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
 fi
 
 make install
@@ -457,7 +460,7 @@ $SRCDIR/$GCC/configure --target=$TARGET \
     "--with-pkgversion=$PKGVERSION" \
     ${MULTILIB_LIST}
 
-make -j$JOBS CXXFLAGS_FOR_TARGET="-g -Os -ffunction-sections -fdata-sections -fno-exceptions"
+make -j$JOBS CXXFLAGS="${CXXFLAGS:-}" CXXFLAGS_FOR_TARGET="-g -Os -ffunction-sections -fdata-sections -fno-exceptions"
 make install
 
 copy_multi_libs src_prefix="$BUILDDIR_NATIVE/target-libs/arm-none-eabi/lib" \
@@ -633,7 +636,7 @@ ${TAR} cjf $PACKAGEDIR/$PACKAGE_NAME_NATIVE.tar.bz2   \
     $INSTALL_PACKAGE_NAME/arm-none-eabi     \
     $INSTALL_PACKAGE_NAME/bin               \
     $INSTALL_PACKAGE_NAME/lib               \
-    $INSTALL_PACKAGE_NAME/share             
+    $INSTALL_PACKAGE_NAME/share
 
 # Remove stale links.
 rm -f $INSTALL_PACKAGE_NAME
@@ -889,7 +892,6 @@ mkdir -p $SRCDIR/$INSTALLATION/output
 makensis -DBaseDir=$INSTALLDIR_MINGW  \
          -DIncDir=$SRCDIR \
          -DAppName="$APPNAME" \
-         -DAppRootNameStr="$PKGROOTNAME"   \
          -DAppNameStr="$PKGVERSION"   \
          -DPackageName=$PACKAGE_NAME_MINGW   \
          -DInstallDirBase="$INSTALLBASE"   \

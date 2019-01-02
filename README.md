@@ -26,3 +26,8 @@ The main GCC version is in `gcc/BASE-VER`.
 - v7.3.1
 - https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-src.tar.bz2
 
+## gcc-arm-none-eabi-8-2018-q4-major
+
+- v8.2.1
+- https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-src.tar.bz2
+

@@ -1,9 +1,9 @@
 # Copyright (c) 2011-2015, ARM Limited
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright notice,
 #       this list of conditions and the following disclaimer.
 #     * Redistributions in binary form must reproduce the above copyright
@@ -12,7 +12,7 @@
 #     * Neither the name of Arm nor the names of its contributors may be used
 #       to endorse or promote products derived from this software without
 #       specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -62,7 +62,7 @@ copy_dir_clean() {
 #   parameter 2: dirname of the source tree
 #   parameter 3: target package name
 #   parameter 4-10: additional excluding
-# This function will create bz2 package for files under param1/param2, 
+# This function will create bz2 package for files under param1/param2,
 # excluding unnecessary parts, and create package named param2.
 pack_dir_clean() {
     set +u
@@ -80,7 +80,7 @@ clean_env () {
     local var_list
     local var
     var_list=`export|grep "^declare -x"|sed -e "s/declare -x //"|cut -d"=" -f1`
-    
+
     for var in $var_list ; do
         case $var in
             DEJAGNU|\
@@ -257,7 +257,7 @@ PACKAGEDIR=$ROOT/pkg
 GMP_VER=6.1.0
 MPFR_VER=3.1.4
 MPC_VER=1.0.3
-ISL_VER=0.15
+ISL_VER=0.18
 EXPAT_VER=2.1.1
 LIBELF_VER=0.8.13
 LIBICONV_VER=1.14
@@ -286,7 +286,7 @@ PYTHON_WIN=python-$PYTHON_WIN_VER
 GMP_PACK=$GMP.tar.bz2
 MPFR_PACK=$MPFR.tar.bz2
 MPC_PACK=$MPC.tar.gz
-ISL_PACK=$ISL.tar.bz2
+ISL_PACK=$ISL.tar.xz
 EXPAT_PACK=$EXPAT.tar.bz2
 LIBELF_PACK=$LIBELF.tar.gz
 LIBICONV_PACK=$LIBICONV.tar.gz
@@ -295,8 +295,7 @@ ENV_VAR_UPDATE_PACK=$ENV_VAR_UPDATE.7z
 PYTHON_WIN_PACK=$PYTHON_WIN.msi
 
 GMP_URL=https://gmplib.org/download/gmp/$GMP_PACK
-#MPFR_URL=http://www.mpfr.org/$MPFR/$MPFR_PACK
-MPFR_URL=https://ftp.gnu.org/gnu/mpfr/$MPFR_PACK
+MPFR_URL=http://www.mpfr.org/$MPFR/$MPFR_PACK
 MPC_URL=ftp://ftp.gnu.org/gnu/mpc/$MPC_PACK
 ISL_URL=http://isl.gforge.inria.fr/$ISL_PACK
 EXPAT_URL=https://downloads.sourceforge.net/project/expat/expat/$EXPAT_VER/$EXPAT_PACK
@@ -308,6 +307,7 @@ PYTHON_WIN_URL=https://www.python.org/ftp/python/$PYTHON_WIN_VER/$PYTHON_WIN_PAC
 
 # Set variables according to real environment to make this script can run
 # on Ubuntu and Mac OS X.
+TAR=tar
 uname_string=`uname | sed 'y/LINUXDARWIN/linuxdarwin/'`
 host_arch=`uname -m | sed 'y/XI/xi/'`
 if [ "x$uname_string" == "xlinux" ] ; then
@@ -316,7 +316,6 @@ if [ "x$uname_string" == "xlinux" ] ; then
     READLINK=readlink
     JOBS=`grep ^processor /proc/cpuinfo|wc -l`
     GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm"
-    TAR=tar
     MD5="md5sum -b"
     PACKAGE_NAME_SUFFIX=linux
 elif [ "x$uname_string" == "xdarwin" ] ; then
@@ -327,7 +326,6 @@ elif [ "x$uname_string" == "xdarwin" ] ; then
     JOBS=`sysctl -n hw.ncpu`
     #JOBS=1
     GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-lstdc++ -lm"
-    TAR=gnutar
     MD5="md5 -r"
     PACKAGE_NAME_SUFFIX=mac
 else
@@ -392,8 +390,7 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     NEWLIB_CONFIG_OPTS=
 
 
-    PKGROOTNAME="GNU Tools for Arm Embedded Processors"
-    PKGVERSION="$PKGROOTNAME $GCC_VER_NAME-$RELEASEVER"
+    PKGVERSION="GNU Tools for Arm Embedded Processors $GCC_VER_NAME-$RELEASEVER"
     BUGURL="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm"
 
     OBJ_SUFFIX_MINGW=$TARGET-$RELEASEDATE-$HOST_MINGW
