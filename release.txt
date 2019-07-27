@@ -1,7 +1,7 @@
 Release notes for
 *************************************************
 GNU Tools for Arm Embedded Processors 8
-                               - Q4 2018
+                               - Q3 2019
 *************************************************
 
 This release includes the following items:
@@ -11,17 +11,17 @@ This release includes the following items:
 * Source code package (together with build scripts and instructions to setup
   build environment), composed of:
 
-  * gcc : gcc-8-branch revision 267074
+  * gcc : gcc-8-branch revision 273027
     svn://gcc.gnu.org/svn/gcc/branches/gcc-8-branch
 
-  * binutils : 2.31 with mainline backports
-    git://sourceware.org/git/binutils-gdb.git commit fe554d200d1befdc3bddc9e14f8593ea3446c351
+  * binutils : 2.32 with mainline backports
+    git://sourceware.org/git/binutils-gdb.git commit 2ab3145b4fae077dccd8a93078eeaec038f7126d
 
   * newlib and newlib-nano :
-    git://sourceware.org/git/newlib-cygwin.git commit df6915f029ac9acd2b479ea898388cbd7dda4974
+    git://sourceware.org/git/newlib-cygwin.git commit fff17ad73f6ae6b75ef293e17a837f23f6134753
 
-  * gdb : 8.2 without target sim support
-    git://sourceware.org/git/binutils-gdb.git commit fe554d200d1befdc3bddc9e14f8593ea3446c351
+  * gdb : 8.3 without target sim support
+    git://sourceware.org/git/binutils-gdb.git commit 66263c8cdba32ef18ae0dfabde0867b9b850c441
 
 Note that some or all of the following prerequisites are downloaded when
 building from source:
@@ -36,7 +36,7 @@ building from source:
 
   * isl 0.15 : ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.15.tar.bz2
 
-  * libelf 0.8.13 : http://www.mr511.de/software/libelf-0.8.13.tar.gz
+  * libelf 0.8.13 : https://fossies.org/linux/misc/old/libelf-0.8.13.tar.gz
 
   * libiconv 1.14 :
     http://ftp.gnu.org/gnu/libiconv/libiconv-1.14.tar.gz
@@ -77,8 +77,13 @@ Tests:
     - RHEL 7 (tarball)
   + Mac OS X 10.13 (tarball)
 
-Important changes in 8-2018Q4 major release:
-* Minimum host requirement moved from Mac OS X 10.7.3 to 10.13.
+Important changes in 8-2019Q3 update release:
+* https://sourceware.org/bugzilla/show_bug.cgi?id=23699
+* https://bugs.launchpad.net/gcc-arm-embedded/+bug/1813553
+* https://bugs.launchpad.net/gcc-arm-embedded/+bug/1814397
+* Fix debug info loss for CMSE entry functions
+  (https://www.sourceware.org/ml/binutils/2019-07/msg00018.html)
+
 
 Known Changes and Issues:
 * Thumb1 code size regression due to new register allocation:
