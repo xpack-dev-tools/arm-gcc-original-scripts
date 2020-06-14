@@ -54,7 +54,12 @@ This script will build dependent libraries for GNU Tools Arm Embedded toolchain.
 OPTIONS:
   --skip_steps=STEPS    specify which build steps you want to skip.  Concatenate
                         them with comma for skipping more than one steps.
-                        Available step is: mingw32.
+                        Available step is:
+                            howto
+                            md5_checksum
+                            mingw[32]
+                            native
+                            package_sources
 
 EOF
 }
@@ -65,6 +70,7 @@ fi
 
 skip_steps=
 skip_mingw32=no
+skip_native_build=no
 
 for ac_arg; do
     case $ac_arg in
@@ -85,10 +91,13 @@ done
 if [ "x$skip_steps" != "x" ]; then
     for ss in $skip_steps; do
         case $ss in
-            mingw32)
+            mingw|mingw32)
                 skip_mingw32=yes
                 ;;
-            howto | package_sources | md5_checksum)
+            native)
+                skip_native_build=yes
+                ;;
+            howto | package_sources | md5_checksum | strip)
                 ;;
             *)
                 echo "Unknown build steps: $ss" 1>&2
@@ -103,11 +112,12 @@ if [ "x$BUILD" == "xx86_64-apple-darwin10" ]; then
   skip_mingw32=yes
 fi
 
-rm -rf "$BUILDDIR_NATIVE"
-mkdir -p "$BUILDDIR_NATIVE"
-
-rm -rf "$INSTALLDIR_NATIVE"
-mkdir -p "$INSTALLDIR_NATIVE"
+if [ "x$skip_native_build" != "xyes" ] ; then
+    rm -rf "$BUILDDIR_NATIVE"
+    mkdir -p "$BUILDDIR_NATIVE"
+    rm -rf "$INSTALLDIR_NATIVE"
+    mkdir -p "$INSTALLDIR_NATIVE"
+fi
 
 if [ "x$skip_mingw32" != "xyes" ] ; then
     rm -rf "$BUILDDIR_MINGW"
@@ -116,119 +126,118 @@ if [ "x$skip_mingw32" != "xyes" ] ; then
     mkdir -p "$INSTALLDIR_MINGW"
 fi
 
-rm -rf "$PACKAGEDIR"
-mkdir -p "$PACKAGEDIR"
-
 cd "$SRCDIR"
 
-echo Task [I-0] /$HOST_NATIVE/zlib/
-rm -rf $BUILDDIR_NATIVE/zlib
-copy_dir_clean $SRCDIR/$ZLIB $BUILDDIR_NATIVE/zlib
-pushd $BUILDDIR_NATIVE/zlib
-#install zlib at .../host-libs/zlib, prevent gcc from linking into this external zlib
-./configure --static --prefix=$BUILDDIR_NATIVE/host-libs/zlib
-make
-make install
-popd
+if [ "x$skip_native_build" != "xyes" ] ; then
+    echo Task [I-0] /$HOST_NATIVE/zlib/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/zlib
+    copy_dir_clean $SRCDIR/$ZLIB $BUILDDIR_NATIVE/zlib
+    pushd $BUILDDIR_NATIVE/zlib
+    #install zlib at .../host-libs/zlib, prevent gcc from linking into this external zlib
+    ./configure --static --prefix=$BUILDDIR_NATIVE/host-libs/zlib
+    make
+    make install
+    popd
 
-echo Task [I-1] /$HOST_NATIVE/gmp/
-rm -rf $BUILDDIR_NATIVE/gmp && mkdir -p $BUILDDIR_NATIVE/gmp
-pushd $BUILDDIR_NATIVE/gmp
+    echo Task [I-1] /$HOST_NATIVE/gmp/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/gmp && mkdir -p $BUILDDIR_NATIVE/gmp
+    pushd $BUILDDIR_NATIVE/gmp
 
-CPPFLAGS="-fexceptions" $SRCDIR/$GMP/configure --build=$BUILD \
-    --host=$HOST_NATIVE \
-    --prefix=$BUILDDIR_NATIVE/host-libs/usr \
-    --enable-cxx \
-    --disable-shared \
-    --disable-nls
+    CPPFLAGS="-fexceptions" $SRCDIR/$GMP/configure --build=$BUILD \
+        --host=$HOST_NATIVE \
+        --prefix=$BUILDDIR_NATIVE/host-libs/usr \
+        --enable-cxx \
+        --disable-shared \
+        --disable-nls
 
-make -j$JOBS
-make install
-#make check
-popd
+    make -j$JOBS
+    make install
+    #make check
+    popd
 
-echo Task [I-2] /$HOST_NATIVE/mpfr/
-rm -rf $BUILDDIR_NATIVE/mpfr && mkdir -p $BUILDDIR_NATIVE/mpfr
-pushd $BUILDDIR_NATIVE/mpfr
+    echo Task [I-2] /$HOST_NATIVE/mpfr/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/mpfr && mkdir -p $BUILDDIR_NATIVE/mpfr
+    pushd $BUILDDIR_NATIVE/mpfr
 
-$SRCDIR/$MPFR/configure --build=$BUILD \
-    --host=$HOST_NATIVE \
-    --target=$TARGET \
-    --prefix=$BUILDDIR_NATIVE/host-libs/usr \
-    --disable-shared \
-    --disable-nls \
-    --with-gmp=$BUILDDIR_NATIVE/host-libs/usr
+    $SRCDIR/$MPFR/configure --build=$BUILD \
+        --host=$HOST_NATIVE \
+        --target=$TARGET \
+        --prefix=$BUILDDIR_NATIVE/host-libs/usr \
+        --disable-shared \
+        --disable-nls \
+        --with-gmp=$BUILDDIR_NATIVE/host-libs/usr
 
-make -j$JOBS
-make install
-#make check
-popd
+    make -j$JOBS
+    make install
+    #make check
+    popd
 
-echo Task [I-3] /$HOST_NATIVE/mpc/
-rm -rf $BUILDDIR_NATIVE/mpc && mkdir -p $BUILDDIR_NATIVE/mpc
-pushd $BUILDDIR_NATIVE/mpc
+    echo Task [I-3] /$HOST_NATIVE/mpc/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/mpc && mkdir -p $BUILDDIR_NATIVE/mpc
+    pushd $BUILDDIR_NATIVE/mpc
 
-$SRCDIR/$MPC/configure --build=$BUILD \
-    --host=$HOST_NATIVE \
-    --target=$TARGET \
-    --prefix=$BUILDDIR_NATIVE/host-libs/usr \
-    --disable-shared \
-    --disable-nls \
-    --with-gmp=$BUILDDIR_NATIVE/host-libs/usr \
-    --with-mpfr=$BUILDDIR_NATIVE/host-libs/usr
+    $SRCDIR/$MPC/configure --build=$BUILD \
+        --host=$HOST_NATIVE \
+        --target=$TARGET \
+        --prefix=$BUILDDIR_NATIVE/host-libs/usr \
+        --disable-shared \
+        --disable-nls \
+        --with-gmp=$BUILDDIR_NATIVE/host-libs/usr \
+        --with-mpfr=$BUILDDIR_NATIVE/host-libs/usr
 
-make -j$JOBS
-make install
-#make check
-popd
+    make -j$JOBS
+    make install
+    #make check
+    popd
 
-echo Task [I-4] /$HOST_NATIVE/isl/
-rm -rf $BUILDDIR_NATIVE/isl && mkdir -p $BUILDDIR_NATIVE/isl
-pushd $BUILDDIR_NATIVE/isl
+    echo Task [I-4] /$HOST_NATIVE/isl/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/isl && mkdir -p $BUILDDIR_NATIVE/isl
+    pushd $BUILDDIR_NATIVE/isl
 
-$SRCDIR/$ISL/configure --build=$BUILD \
-    --host=$HOST_NATIVE \
-    --target=$TARGET \
-    --prefix=$BUILDDIR_NATIVE/host-libs/usr \
-    --disable-shared \
-    --disable-nls \
-    --with-gmp-prefix=$BUILDDIR_NATIVE/host-libs/usr
+    $SRCDIR/$ISL/configure --build=$BUILD \
+        --host=$HOST_NATIVE \
+        --target=$TARGET \
+        --prefix=$BUILDDIR_NATIVE/host-libs/usr \
+        --disable-shared \
+        --disable-nls \
+        --with-gmp-prefix=$BUILDDIR_NATIVE/host-libs/usr
 
-make
-make install
-#make check
-popd
+    make
+    make install
+    #make check
+    popd
 
-echo Task [I-5] /$HOST_NATIVE/libelf/
-rm -rf $BUILDDIR_NATIVE/libelf && mkdir -p $BUILDDIR_NATIVE/libelf
-pushd $BUILDDIR_NATIVE/libelf
+    echo Task [I-5] /$HOST_NATIVE/libelf/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/libelf && mkdir -p $BUILDDIR_NATIVE/libelf
+    pushd $BUILDDIR_NATIVE/libelf
 
-$SRCDIR/$LIBELF/configure --build=$BUILD \
-    --host=$HOST_NATIVE \
-    --target=$TARGET \
-    --prefix=$BUILDDIR_NATIVE/host-libs/usr \
-    --disable-shared \
-    --disable-nls
+    $SRCDIR/$LIBELF/configure --build=$BUILD \
+        --host=$HOST_NATIVE \
+        --target=$TARGET \
+        --prefix=$BUILDDIR_NATIVE/host-libs/usr \
+        --disable-shared \
+        --disable-nls
 
-make -j$JOBS
-make install
-#make check
-popd
+    make -j$JOBS
+    make install
+    #make check
+    popd
 
-echo Task [I-6] /$HOST_NATIVE/expat/
-rm -rf $BUILDDIR_NATIVE/expat && mkdir -p $BUILDDIR_NATIVE/expat
-pushd $BUILDDIR_NATIVE/expat
+    echo Task [I-6] /$HOST_NATIVE/expat/ | tee -a "$BUILDDIR_NATIVE/.stage"
+    rm -rf $BUILDDIR_NATIVE/expat && mkdir -p $BUILDDIR_NATIVE/expat
+    pushd $BUILDDIR_NATIVE/expat
 
-$SRCDIR/$EXPAT/configure --build=$BUILD \
-    --host=$HOST_NATIVE \
-    --target=$TARGET \
-    --prefix=$BUILDDIR_NATIVE/host-libs/usr \
-    --disable-shared \
-    --disable-nls
+    $SRCDIR/$EXPAT/configure --build=$BUILD \
+        --host=$HOST_NATIVE \
+        --target=$TARGET \
+        --prefix=$BUILDDIR_NATIVE/host-libs/usr \
+        --disable-shared \
+        --disable-nls
 
-make -j$JOBS
-make install
-popd
+    make -j$JOBS
+    make install
+    popd
+fi  # if [ "x$skip_native_build" != "xyes" ] ; then
 
 # skip building mingw32 toolchain if "--skip_mingw32" specified
 if [ "x$skip_mingw32" == "xyes" ] ; then
@@ -248,7 +257,7 @@ saveenvvar OBJDUMP $HOST_MINGW_TOOL-objdump
 saveenvvar RC $HOST_MINGW_TOOL-windres
 saveenvvar WINDRES $HOST_MINGW_TOOL-windres
 
-echo Task [II-0] /$HOST_MINGW/zlib/
+echo Task [II-0] /$HOST_MINGW/zlib/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/zlib
 copy_dir_clean $SRCDIR/$ZLIB $BUILDDIR_MINGW/zlib
 #saveenv
@@ -261,7 +270,7 @@ make install
 popd
 #restoreenv
 
-echo Task [II-1] /$HOST_MINGW/libiconv/
+echo Task [II-1] /$HOST_MINGW/libiconv/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/libiconv && mkdir -p $BUILDDIR_MINGW/libiconv
 pushd $BUILDDIR_MINGW/libiconv
 
@@ -276,7 +285,7 @@ make -j$JOBS
 make install
 popd
 
-echo Task [II-2] /$HOST_MINGW/gmp/
+echo Task [II-2] /$HOST_MINGW/gmp/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/gmp && mkdir -p $BUILDDIR_MINGW/gmp
 pushd $BUILDDIR_MINGW/gmp
 
@@ -291,7 +300,7 @@ make -j$JOBS
 make install
 popd
 
-echo Task [II-3] /$HOST_MINGW/mpfr/
+echo Task [II-3] /$HOST_MINGW/mpfr/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/mpfr && mkdir -p $BUILDDIR_MINGW/mpfr
 pushd $BUILDDIR_MINGW/mpfr
 
@@ -307,7 +316,7 @@ make -j$JOBS
 make install
 popd
 
-echo Task [II-4] /$HOST_MINGW/mpc/
+echo Task [II-4] /$HOST_MINGW/mpc/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/mpc && mkdir -p $BUILDDIR_MINGW/mpc
 pushd $BUILDDIR_MINGW/mpc
 
@@ -324,7 +333,7 @@ make -j$JOBS
 make install
 popd
 
-echo Task [II-5] /$HOST_MINGW/isl/
+echo Task [II-5] /$HOST_MINGW/isl/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/isl && mkdir -p $BUILDDIR_MINGW/isl
 pushd $BUILDDIR_MINGW/isl
 
@@ -340,7 +349,7 @@ make
 make install
 popd
 
-echo Task [II-6] /$HOST_MINGW/libelf/
+echo Task [II-6] /$HOST_MINGW/libelf/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/libelf && mkdir -p $BUILDDIR_MINGW/libelf
 pushd $BUILDDIR_MINGW/libelf
 
@@ -355,7 +364,7 @@ make -j$JOBS
 make install
 popd
 
-echo Task [II-7] /$HOST_MINGW/expat/
+echo Task [II-7] /$HOST_MINGW/expat/ | tee -a "$BUILDDIR_MINGW/.stage"
 rm -rf $BUILDDIR_MINGW/expat && mkdir -p $BUILDDIR_MINGW/expat
 pushd $BUILDDIR_MINGW/expat
 

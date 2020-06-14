@@ -78,10 +78,12 @@ pack_dir_clean() {
 clean_env () {
     set +u
     local var_list
-    var_list=$(export | sed -e "s/declare -x //" | cut -d= -f1 | grep -E '[[:upper:]]+\b')
+    var_list=$(export | grep "^declare -x" | sed -e "s/declare -x //" | cut -d"=" -f1 | grep -E '[[:upper:]]+\b')
 
     for var in $var_list ; do
         case "$var" in
+        WORKSPACE | SRC_VERSION)
+            ;;
         DEJAGNU | DISPLAY | HOME | LD_LIBRARY_PATH | LOGNAME | PATH | PWD | SHELL | SHLVL | TERM | USER | USERNAME | XAUTHORITY)
             ;;
         com.apple.*)
@@ -188,7 +190,7 @@ strip_binary() {
     local strip="$1"
     local bin="$2"
 
-    file $bin | grep -q -P "(\bELF\b)|(\bPE\b)|(\bPE32\b)"
+    file $bin | grep -q -e "\bELF\b" -e "\bPE\b" -e "\bPE32\b" -e "\bMach-O\b"
     if [ $? -eq 0 ]; then
         $strip $bin 2>/dev/null || true
     fi
@@ -318,43 +320,45 @@ elif [ "x$uname_string" == "xdarwin" ] ; then
     JOBS=1
     GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-lstdc++ -lm"
     MD5="md5 -r"
-    PACKAGE_NAME_SUFFIX=mac
+    PACKAGE_NAME_SUFFIX=mac-$(sw_vers -productVersion)
     #Redefine wget command to curl as MacOS does not have wget by default
     WGET="curl -OLs"
 else
     error "Unsupported build system : $uname_string"
 fi
 
-PREREQS="GMP MPFR MPC ISL EXPAT LIBELF LIBICONV ZLIB"
+SRC_PREREQS="GMP MPFR MPC ISL EXPAT LIBELF LIBICONV ZLIB"
 WIN_PREREQS="ENV_VAR_UPDATE PYTHON_WIN"
+
+PREREQS="$SRC_PREREQS"
 if [ "x$BUILD" != "xx86_64-apple-darwin10" ]; then
-    PREREQS="$PREREQS $WIN_PREREQS"
+    PREREQS="$SRC_PREREQS $WIN_PREREQS"
 fi
 
 SCRIPT=$(basename $0)
+
+RELEASEDATE=$(date +%Y%m%d)
+release_year=$(date +%Y)
+release_month=$(date +%m)
+case $release_month in
+    01|02|03)
+        RELEASEVER=${release_year}-q1-update
+        ;;
+    04|05|06)
+        RELEASEVER=${release_year}-q2-update
+        ;;
+    07|08|09)
+        RELEASEVER=${release_year}-q3-update
+        ;;
+    10|11|12)
+        RELEASEVER=${release_year}-q4-major
+        ;;
+esac
 
 # This is a build script, go on
 if [ "${SCRIPT%%-*}" = "build" ]; then
 
     stack_level=0
-
-    RELEASEDATE=$(date +%Y%m%d)
-    release_year=$(date +%Y)
-    release_month=$(date +%m)
-    case $release_month in
-        01|02|03)
-            RELEASEVER=${release_year}-q1-update
-            ;;
-        04|05|06)
-            RELEASEVER=${release_year}-q2-update
-            ;;
-        07|08|09)
-            RELEASEVER=${release_year}-q3-update
-            ;;
-        10|11|12)
-            RELEASEVER=${release_year}-q4-major
-            ;;
-    esac
 
     RELEASE_FILE=release.txt
     README_FILE=readme.txt
@@ -383,7 +387,7 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     NEWLIB_CONFIG_OPTS=
 
 
-    PKGVERSION="GNU Tools for Arm Embedded Processors $GCC_VER_NAME-$RELEASEVER"
+    PKGVERSION="GNU Arm Embedded Toolchain $GCC_VER_NAME-$RELEASEVER"
     BUGURL="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm"
 
     OBJ_SUFFIX_MINGW=$TARGET-$RELEASEDATE-$HOST_MINGW
@@ -392,7 +396,7 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     PACKAGE_NAME_NATIVE=$PACKAGE_NAME-$PACKAGE_NAME_SUFFIX
     PACKAGE_NAME_MINGW=$PACKAGE_NAME-win32
     INSTALL_PACKAGE_NAME=gcc-$TARGET-$GCC_VER_NAME-$RELEASEVER
-    INSTALLBASE="GNU Tools Arm Embedded"
+    INSTALLBASE="GNU Arm Embedded Toolchain"
     APPNAME="$PKGVERSION $GCC_VER_SHORT $release_year"
 
 fi # not a build script

@@ -50,8 +50,12 @@ This script will install sources needed to build the GNU Tools Arm Embedded tool
 OPTIONS:
   --skip_steps=STEPS    specify which build steps you want to skip.  Concatenate
                         them with comma for skipping more than one steps.
-                        Available step is: mingw32.
-
+                        Available step is: 
+                            howto
+                            md5_checksum
+                            mingw32
+                            native
+                            package_sources
 EOF
 }
 
@@ -80,7 +84,7 @@ if [ "x$skip_steps" != "x" ]; then
             mingw32)
                 skip_mingw32=yes
                 ;;
-            howto | package_sources | md5_checksum)
+            howto | package_sources | md5_checksum | native | strip)
                 ;;
             *)
                 echo "Unknown build steps: $ss" 1>&2
