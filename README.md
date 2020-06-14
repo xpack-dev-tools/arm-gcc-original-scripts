@@ -1,12 +1,16 @@
 # arm-gcc-original-scripts
 
-This [GitHub project](https://github.com/xpack-dev-tools/arm-gcc-original-scripts.git) 
+This [GitHub project](https://github.com/xpack-dev-tools/arm-gcc-original-scripts.git)
 keeps a copy of the ARM original scripts used to build
 [GNU ARM Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm),
 to easily identify the differences between releases.
 
 It includes all existing files in the root folder, except the
 `How-to-build-toolchain.pdf`.
+
+Note: there is also a GitHub project
+[ARM-software/toolchain-gnu-bare-metal](https://github.com/ARM-software/toolchain-gnu-bare-metal), with the build scripts, but it does not seem up
+to date.
 
 ## How to update
 
