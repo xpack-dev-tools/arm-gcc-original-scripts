@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2019, ARM Limited
+# Copyright (c) 2011-2020, ARM Limited
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -345,7 +345,7 @@ case $release_month in
         RELEASEVER=${release_year}-q1-update
         ;;
     04|05|06)
-        RELEASEVER=${release_year}-q2-update
+        RELEASEVER=${release_year}-q2-preview
         ;;
     07|08|09)
         RELEASEVER=${release_year}-q3-update

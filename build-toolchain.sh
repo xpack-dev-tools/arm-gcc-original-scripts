@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-# Copyright (c) 2011-2019, ARM Limited
+# Copyright (c) 2011-2020, ARM Limited
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -937,9 +937,11 @@ if [ "x$skip_mingw32" != "xyes" ] ; then
     restoreenv
 
     echo Task [IV-8] /Package toolchain in zip format/
-    pushd $INSTALLDIR_MINGW
+    pushd $(dirname $INSTALLDIR_MINGW)
+    ln -s $(basename $INSTALLDIR_MINGW) $PACKAGE_NAME
     rm -f $PACKAGEDIR/$PACKAGE_NAME_MINGW.zip
-    zip -r9 $PACKAGEDIR/$PACKAGE_NAME_MINGW.zip .
+    zip -r9 $PACKAGEDIR/$PACKAGE_NAME_MINGW.zip $PACKAGE_NAME
+    rm $PACKAGE_NAME
     popd
 fi #end of if [ "x$skip_mingw32" != "xyes" ] ;
 

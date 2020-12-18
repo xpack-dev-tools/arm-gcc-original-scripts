@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-# Copyright (c) 2011-2019, ARM Limited
+# Copyright (c) 2011-2020, ARM Limited
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

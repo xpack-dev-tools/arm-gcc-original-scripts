@@ -1,6 +1,6 @@
-GNU Arm Embedded Toolchain 2020-q2-update
+GNU Arm Embedded Toolchain 2020-q4-major
 Pre-built GNU toolchain for Arm Cortex-A/R and Cortex-M processors
-GCC Version: 9.3.1
+GCC Version: 10.2
 
 Table of Contents
 * Installing executables on Linux
@@ -8,6 +8,7 @@ Table of Contents
 * Installing executables on Windows
 * Invoking GCC
 * Architecture options usage
+* Available multilibs
 * C Libraries usage
 * Linker scripts & startup code
 * Samples
@@ -81,7 +82,7 @@ options for variants of Cortex-A/R and Cortex-M architectures.
 
 -mcpu:
 For the permissible CPU names and extensions, see the GCC online manual:
-https://gcc.gnu.org/onlinedocs/gcc-9.3.0/gcc/ARM-Options.html#index-mcpu-2
+https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/ARM-Options.html#index-mcpu-2
 Use the optional extension name with -mcpu to disable the extensions that are
 not present in your CPU implementation.
 
@@ -94,7 +95,7 @@ If floating-point or Advanced SIMD instructions are present, then use the
 -mfloat-abi option to control the floating-point ABI, or use -mfloat-abi=soft
 to disable floating-point and Advanced SIMD instructions.
 For the permissible values of -mfloat-abi, see the GCC online manual:
-https://gcc.gnu.org/onlinedocs/gcc-9.3.0/gcc/ARM-Options.html#index-mfloat-abi
+https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/ARM-Options.html#index-mfloat-abi
 
 -mthumb:
 When using processors that can execute in Arm state and Thumb state, use -mthumb
@@ -128,9 +129,15 @@ Example with floating-point and Advanced SIMD instructions with soft-float ABI:
 Example with floating-point and Advanced SIMD instructions with hard-float ABI:
     $ arm-none-eabi-gcc -mcpu=cortex-a53 -mfloat-abi=hard -mthumb
 
+Example with MVE and floating-point with soft-float ABI:
+    $ arm-none-eabi-gcc -mcpu=cortex-m55 -mfloat-abi=softfp
+
+Example with MVE and floating-point with hard-float ABI:
+    $ arm-none-eabi-gcc -mcpu=cortex-m55 -mfloat-abi=hard
+
 * Available multilibs *
 
-Currently GNU Arm Embedded Toolchain 2020-q2-update offers both rmprofile and
+Currently GNU Arm Embedded Toolchain 2020-q4-major offers both rmprofile and
 aprofile set of multilibs.
 
 How to list all multilibs supported by the toolchain:
@@ -239,7 +246,7 @@ debugger, the pyOCD is our recommended gdb server.  More information can be
 found at https://github.com/mbedmicro/pyOCD.
 
 * Centos 6 / RHEL 6 (Red Hat Enterprise Linux) support *
-GNU Arm Embedded Toolchain 2020-q2-update x86_64/Linux toolchain flavor will
+GNU Arm Embedded Toolchain 2020-q4-major x86_64/Linux toolchain flavor will
 support Centos 7 / RHEL 7 onward as it supports host OSs with Glibc (The GNU C
 Library) 2.14 onward.
 For hosts with older Glibc version users must provide Glibc 2.14 as Linux

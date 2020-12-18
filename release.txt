@@ -1,6 +1,6 @@
 Release notes for
 ****************************************************
-GNU Arm Embedded Toolchain 2020-q2-update
+GNU Arm Embedded Toolchain 2020-q4-major
 ****************************************************
 
 This release includes bare metal pre-built binaries for AArch32 EABI targets,
@@ -18,17 +18,17 @@ For Mac OS X, the binaries are provided as tarball and pkg files.
 The release also contains source code package (together with build scripts and
 instructions to setup the build environment), which is composed of:
 
-  * gcc : refs/vendors/ARM/heads/arm-9-branch
-    git://gcc.gnu.org/git/gcc.git commit 13861a80750d118fbdca6006ab175903bacbb7ec
+  * gcc : refs/vendors/ARM/heads/arm-10
+    git://gcc.gnu.org/git/gcc.git commit 3b91aab15443ee150b2ba314a4b26645ce8d713b
 
-  * binutils : binutils-2_34-branch
-    git://sourceware.org/git/binutils-gdb.git commit f75c52135257ea05da151a508d99fbaee1bb9dc1
+  * binutils : binutils-2_35-branch
+    git://sourceware.org/git/binutils-gdb.git commit d9a444bca66bf4b0d328acb547ca114081f3fd87
 
   * newlib and newlib-nano : newlib-3.3.0
     git://sourceware.org/git/newlib-cygwin.git commit 6d79e0a58866548f435527798fbd4a6849d05bc7
 
-  * gdb : gdb-8.3-branch
-    git://sourceware.org/git/binutils-gdb.git commit fc94da0a253e925166bbb1a429c190200dc5778d
+  * gdb : gdb-10-branch
+    git://sourceware.org/git/binutils-gdb.git commit f3fb4a77f29a99ffa2e1460dfa652081cdbd38be
 
 Note that some or all of the following prerequisites are downloaded when
 building from source:
@@ -64,7 +64,7 @@ building from source:
     http://www.zlib.net/fossils/zlib-1.2.8.tar.gz
 
 Features:
-* All GCC 9.3.1 features, plus latest mainline features
+* All GCC 10.2 features
 
 Tests:
 * Targets:
@@ -72,38 +72,25 @@ Tests:
   + Qemu
   + Arm Fast Models
 
-Notable changes in 2020-q2-update release:
-* Bumped binutils to version 2.34.
+Notable changes in 2020-q4-major release:
+* Added support for:
+  + M-profile Vector Extension (MVE) assembler and intrinsics
+  + Custom Datapath Extension (CDE)
+  + Cortex-M55
 
-* Bumped newlib to version 3.3.0.
+* Fixed issue where load or store of __fp16 type together with MVE
+  might generate invalid code.
 
-* Fixed https://bugs.launchpad.net/gcc-arm-embedded/+bug/1848002
-  Parallel builds fail on Windows due to bug in MinGW-w64 used to build binutils.
+* Fixed issue https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91816
+  where the compiler was generating a conditional branch in Thumb2,
+  which was too far for b{cond} to handle.
 
-* Fixed https://community.arm.com/developer/tools-software/tools/f/arm-compilers-forum/46294/macos-objdump-reading-section-bss-failed-because-memory-exhausted
-  objdump: Reading section .bss failed because: memory exhausted.
+* Fixed internal errors in arm and aarch64 GAS when assembling code
+  that attempts a negative .org.
 
-* Fixed https://gcc.gnu.org/bugzilla/show_bug.cgi?id=93188
-  Fix rmprofile multilibs when architecture includes +mp or +sec.
-
-* Fixed https://bugs.launchpad.net/gcc-arm-embedded/+bug/1415310
-  Extend the --skip_steps to enable skipping the target library strip step.
-
-* Additional v7-a multilib directories:
-    thumb/v7-a+fp/softfp
-    thumb/v7-a+fp/hard
-    thumb/v7-a+simd/softfp
-    thumb/v7-a+simd/hard
-    thumb/v7-a/nofp
-
-* Additional v7ve multilib directories:
-    thumb/v7ve+simd/softfp
-    thumb/v7ve+simd/hard
-
-* Additional v8-a multilib directories:
-    thumb/v8-a/nofp
-    thumb/v8-a+simd/softfp
-    thumb/v8-a+simd/hard
+* Fixed issue https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96191
+  where the -fstack-protector option was leaving the canary value
+  in a temporary register on return from the function.
 
 Known issues:
 * Doing IPA on CMSE generates a linker error:
@@ -116,6 +103,6 @@ attribute.
 is only used inside the secure application, the clone function itself should
 not be seen as a secure entry point and so it should not have the __acle_se
 prefix.
-  A possible work around for this is to add a 'noclone' attribute to
+  A possible workaround for this is to add a 'noclone' attribute to
 functions with the 'cmse_nonsecure_entry'. This will prevent GCC from cloning
 such functions.

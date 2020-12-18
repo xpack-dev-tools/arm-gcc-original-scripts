@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2017, ARM Limited
+# Copyright (c) 2017-2020, ARM Limited
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
