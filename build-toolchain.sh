@@ -920,18 +920,7 @@ if [ "x$skip_mingw32" != "xyes" ] ; then
     ln -s $INSTALLDIR_MINGW $INSTALL_PACKAGE_NAME
 
     cp $SRCDIR/$INSTALLATION/gccvar.bat $INSTALLDIR_MINGW/bin
-    mkdir -p $SRCDIR/$INSTALLATION/output
-    makensis -DBaseDir=$INSTALLDIR_MINGW  \
-             -DIncDir=$SRCDIR \
-             -DAppName="$APPNAME" \
-             -DAppNameStr="$PKGVERSION"   \
-             -DPackageName=$PACKAGE_NAME_MINGW   \
-             -DInstallDirBase="$INSTALLBASE"   \
-             -DInstallDirVer="$GCC_VER_SHORT $RELEASEVER" \
-             "-XOutFile $SRCDIR/$INSTALLATION/output/$PACKAGE_NAME_MINGW.exe"    \
-             $SRCDIR/$INSTALLATION/arm-none-eabi-gnu-tools.nsi
 
-    cp -rf $SRCDIR/$INSTALLATION/output/$PACKAGE_NAME_MINGW.exe $PACKAGEDIR/
     rm -f $INSTALL_PACKAGE_NAME
     popd
     restoreenv
@@ -1006,11 +995,6 @@ if [ "x$skip_md5_checksum" != "xyes" ]; then
     MD5_CHECKSUM_FILE="md5-$(uname -m)-$(uname | tr '[:upper:]' '[:lower:]').txt"
     rm -rf "$MD5_CHECKSUM_FILE"
     $MD5 "$PACKAGE_NAME_NATIVE.tar.bz2" > "$MD5_CHECKSUM_FILE"
-    
-    if [ "x$skip_mingw32" != "xyes" ] ; then
-        $MD5 "$PACKAGE_NAME_MINGW.exe" >> "$MD5_CHECKSUM_FILE"
-        $MD5 "$PACKAGE_NAME_MINGW.zip" >> "$MD5_CHECKSUM_FILE"
-    fi
 
     if [ "x$skip_package_sources" != "xyes" ]; then
         $MD5 "$PACKAGE_NAME-src.tar.bz2" >> "$MD5_CHECKSUM_FILE"

@@ -315,9 +315,7 @@ elif [ "x$uname_string" == "xdarwin" ] ; then
     BUILD=x86_64-apple-darwin10
     HOST_NATIVE=x86_64-apple-darwin10
     READLINK=greadlink
-    # Disable parallel build for mac as we will randomly run into "Permission denied" issue.
-    #JOBS=`sysctl -n hw.ncpu`
-    JOBS=1
+    JOBS=`sysctl -n hw.ncpu`
     GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-lstdc++ -lm"
     MD5="md5 -r"
     PACKAGE_NAME_SUFFIX=mac-$(sw_vers -productVersion)
@@ -340,23 +338,13 @@ SCRIPT=$(basename $0)
 RELEASEDATE=$(date +%Y%m%d)
 release_year=$(date +%Y)
 release_month=$(date +%m)
-case $release_month in
-    01|02|03)
-        RELEASEVER=${release_year}-q1-update
-        ;;
-    04|05|06)
-        RELEASEVER=${release_year}-q2-preview
-        ;;
-    07|08|09)
-        RELEASEVER=${release_year}-q3-update
-        ;;
-    10|11|12)
-        RELEASEVER=${release_year}-q4-major
-        ;;
-esac
+RELEASEVER=${release_year}.${release_month}
+
 
 # This is a build script, go on
-if [ "${SCRIPT%%-*}" = "build" ]; then
+# format of pattern match is:
+# build-* or *_build
+if [[ "${SCRIPT%%-*}" = "build" || "${SCRIPT#*_*}" = "build" ]]; then
 
     stack_level=0
 
@@ -366,7 +354,8 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     SAMPLES_DOS_FILES=$SAMPLES/readme.txt
     BUILD_MANUAL_FILE=How-to-build-toolchain.pdf
     GCC_VER=`cat $SRCDIR/$GCC/gcc/BASE-VER`
-    GCC_VER_NAME=`echo $GCC_VER | cut -d'.' -f1`
+    GCC_VER_DISPLAY=`cut -d'.' -f1,2 $SRCDIR/$GCC/gcc/BASE-VER`
+
     # sed -r doesn't exist in Darwin
     if [[ $(uname -s) == "Darwin" ]]
     then
@@ -374,7 +363,6 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     else
         SEDOPTION='-r'
     fi
-    GCC_VER_SHORT=$GCC_VER_NAME
     HOST_MINGW=i686-w64-mingw32
     HOST_MINGW_TOOL=i686-w64-mingw32
     TARGET=arm-none-eabi
@@ -387,16 +375,16 @@ if [ "${SCRIPT%%-*}" = "build" ]; then
     NEWLIB_CONFIG_OPTS=
 
 
-    PKGVERSION="GNU Arm Embedded Toolchain $GCC_VER_NAME-$RELEASEVER"
+    PKGVERSION="GNU Arm Embedded Toolchain $GCC_VER_DISPLAY-$RELEASEVER"
     BUGURL="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm"
 
     OBJ_SUFFIX_MINGW=$TARGET-$RELEASEDATE-$HOST_MINGW
     OBJ_SUFFIX_NATIVE=$TARGET-$RELEASEDATE-$HOST_NATIVE
-    PACKAGE_NAME=gcc-$TARGET-$GCC_VER_NAME-$RELEASEVER
+    PACKAGE_NAME=gcc-$TARGET-$GCC_VER_DISPLAY-$RELEASEVER
     PACKAGE_NAME_NATIVE=$PACKAGE_NAME-$PACKAGE_NAME_SUFFIX
     PACKAGE_NAME_MINGW=$PACKAGE_NAME-win32
-    INSTALL_PACKAGE_NAME=gcc-$TARGET-$GCC_VER_NAME-$RELEASEVER
+    INSTALL_PACKAGE_NAME=gcc-$TARGET-$GCC_VER_DISPLAY-$RELEASEVER
     INSTALLBASE="GNU Arm Embedded Toolchain"
-    APPNAME="$PKGVERSION $GCC_VER_SHORT $release_year"
+    APPNAME="$PKGVERSION"
 
 fi # not a build script

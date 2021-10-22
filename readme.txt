@@ -1,6 +1,6 @@
-GNU Arm Embedded Toolchain 2020-q4-major
+GNU Arm Embedded Toolchain 10.3-2021.10
 Pre-built GNU toolchain for Arm Cortex-A/R and Cortex-M processors
-GCC Version: 10.2
+GCC Version: 10.3
 
 Table of Contents
 * Installing executables on Linux
@@ -13,26 +13,23 @@ Table of Contents
 * Linker scripts & startup code
 * Samples
 * GDB Server for CMSIS-DAP based hardware debugger
-* Centos 6 / RHEL 6 (Red Hat Enterprise Linux) support
 
 * Installing executables on Linux *
 Unpack the tarball to the install directory, like this:
 
-    $ cd ${install_dir} && tar xjf gcc-arm-none-eabi-_version_-linux.tar.bz2
+    $ cd ${install_dir} && tar xjf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+    $ cd ${install_dir} && tar xjf gcc-arm-none-eabi-10.3-2021.10-aarch64-linux.tar.bz2
 
 If you want to use gdb python build (arm-none-eabi-gdb-py), then
 install python2.7.
 
-For some Ubuntu releases, the toolchain can also be installed via
-Launchpad PPA at https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa.
-
 * Installing executables on Mac OS X *
 Unpack the tarball to the install directory, like this:
 
-    $ cd ${install_dir} && tar xjf gcc-arm-none-eabi-_version_-mac.tar.bz2
+    $ cd ${install_dir} && tar xjf gcc-arm-none-eabi-10.3-2021.10-mac.tar.bz2
 
 * Installing executables on Windows *
-Run the installer (gcc-arm-none-eabi-_version_-win32.exe) and follow the
+Run the installer (gcc-arm-none-eabi-10.3-2021.10-win32.exe) and follow the
 instructions. The installer can also be run on the command line. When run on
 the command-line, the following options can be set:
   - /S Run in silent mode
@@ -42,7 +39,7 @@ the command-line, the following options can be set:
 For example, to install the tools silently, amend users PATH and add registry
 entry:
 
-    > gcc-arm-none-eabi-_version_-win32.exe /S /P /R
+    > gcc-arm-none-eabi-10.3-2021.10-win32.exe /S /P /R
 
 The toolchain in Windows zip package is a backup to Windows installer for
 those who cannot run the installer.  You must decompress the zip package
@@ -50,16 +47,16 @@ and then invoke it following instructions in the next section.
 
 To use gdb python build (arm-none-eabi-gdb-py), you must install 32 bit
 python2.7 irrespective of 32 or 64 bit Windows.  Please get the package from
-https://www.python.org/download/.
+https://www.python.org/downloads/.
 
 * Invoking GCC *
 On Linux and Mac OS X, either invoke with the complete path like this:
 
-    $ ${install_dir}/gcc-arm-none-eabi-*/bin/arm-none-eabi-gcc
+    $ ${install_dir}/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc
 
 Or set path like this:
 
-    $ export PATH=$PATH:${install_dir}/gcc-arm-none-eabi-*/bin
+    $ export PATH=$PATH:${install_dir}/gcc-arm-none-eabi-10.3-2021.10/bin
     $ arm-none-eabi-gcc --version
 
 On Windows (although the above approaches also work), it can be more
@@ -82,7 +79,7 @@ options for variants of Cortex-A/R and Cortex-M architectures.
 
 -mcpu:
 For the permissible CPU names and extensions, see the GCC online manual:
-https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/ARM-Options.html#index-mcpu-2
+https://gcc.gnu.org/onlinedocs/gcc-10.3.0/gcc/ARM-Options.html#index-mcpu-2
 Use the optional extension name with -mcpu to disable the extensions that are
 not present in your CPU implementation.
 
@@ -95,7 +92,7 @@ If floating-point or Advanced SIMD instructions are present, then use the
 -mfloat-abi option to control the floating-point ABI, or use -mfloat-abi=soft
 to disable floating-point and Advanced SIMD instructions.
 For the permissible values of -mfloat-abi, see the GCC online manual:
-https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/ARM-Options.html#index-mfloat-abi
+https://gcc.gnu.org/onlinedocs/gcc-10.3.0/gcc/ARM-Options.html#index-mfloat-abi
 
 -mthumb:
 When using processors that can execute in Arm state and Thumb state, use -mthumb
@@ -137,7 +134,7 @@ Example with MVE and floating-point with hard-float ABI:
 
 * Available multilibs *
 
-Currently GNU Arm Embedded Toolchain 2020-q4-major offers both rmprofile and
+GNU Arm Embedded Toolchain 10.3-2021.10 offers both rmprofile and
 aprofile set of multilibs.
 
 How to list all multilibs supported by the toolchain:
@@ -223,7 +220,7 @@ If you are using retarget, linking like:
 * Linker scripts & startup code *
 
 Latest update of linker scripts template and startup code is available on
-https://developer.arm.com/embedded/cmsis
+https://developer.arm.com/tools-and-software/embedded/cmsis
 
 * Samples *
 Examples of all above usages are available at:
@@ -245,36 +242,3 @@ For those who are using this toolchain and have board with CMSIS-DAP based
 debugger, the pyOCD is our recommended gdb server.  More information can be
 found at https://github.com/mbedmicro/pyOCD.
 
-* Centos 6 / RHEL 6 (Red Hat Enterprise Linux) support *
-GNU Arm Embedded Toolchain 2020-q4-major x86_64/Linux toolchain flavor will
-support Centos 7 / RHEL 7 onward as it supports host OSs with Glibc (The GNU C
-Library) 2.14 onward.
-For hosts with older Glibc version users must provide Glibc 2.14 as Linux
-shared library for example by using LD_LIBRARY_PATH search path environment
-variable.
-
-For host OSs without required Glibc version users will experience the following error:
-
-    $ arm-none-eabi-gcc --version
-    arm-none-eabi-gcc: /lib64/libc.so.6: version `GLIBC_2.14' not found (required by arm-none-eabi-gcc)
-
-Below example demonstrates how to custom build Glibc 2.14 and use it as Linux
-shared library with GNU Arm Embedded Toolchain.
-
-First, build Glibc 2.14 from sources to /opt/glibc-2.14:
-
-    $ cd /tmp
-    $ wget http://ftp.gnu.org/gnu/glibc/glibc-2.14.tar.gz
-    $ tar zxvf glibc-2.14.tar.gz
-    $ cd glibc-2.14
-    $ mkdir build
-    $ cd build
-    $ ../configure --prefix=/opt/glibc-2.14
-    $ make
-    $ sudo make install
-
-Second, add newly built Glibc to LD_LIBRARY_PATH environment variable and
-execute toolchain binary:
-
-    $ export LD_LIBRARY_PATH="/opt/glibc-2.14/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    $ arm-none-eabi-gcc --version
